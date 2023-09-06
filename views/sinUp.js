@@ -12,9 +12,9 @@ async function sinUpData(event) {
         let password = document.getElementById('password')
         let phone  = document.getElementById('pnone')
 
-        // if (!name.value || !email.value || !password.value || !phone.value) {
-        //     return alert('Fill the form properly')
-        // }
+        if (!name.value || !email.value || !password.value || !phone.value) {
+            return alert('Fill the form properly')
+        }
         let user = {
             name: name.value,
             email: email.value,
@@ -29,7 +29,7 @@ async function sinUpData(event) {
         let res = await axios.post("http://localhost:3000/user/chat-sinup-data", user)
 
         name.value = "";
-        // email.value = ""
+        email.value = ""
         password.value = ""
         phone.value = ""
 
