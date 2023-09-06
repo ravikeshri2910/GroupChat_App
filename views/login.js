@@ -30,7 +30,7 @@ async function logInData(event) {
          
             localStorage.setItem('token', res.data.token)
          alert("login done")
-            // window.location.href = "expenseData.html"
+            window.location.href = "chat.html"
         }
         if (res.status == 404) {
          
