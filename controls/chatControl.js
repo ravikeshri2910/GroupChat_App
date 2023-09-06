@@ -14,3 +14,16 @@ exports.chatMsg = async(req, res )=>{
 
     res.status(201).json({data : usermsg})
 }
+
+exports.getMsg = async(req,res)=>{
+
+    console.log('getmsg')
+    const id = req.user.id
+    const usermsg = await Message.findAll({
+        where: {userId : id}
+    })
+
+    res.status(201).json({data : usermsg})
+
+
+}
