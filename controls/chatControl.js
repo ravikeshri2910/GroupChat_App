@@ -20,7 +20,8 @@ exports.getMsg = async(req,res)=>{
     console.log('getmsg')
     const id = req.user.id
     const usermsg = await Message.findAll({
-        where: {userId : id}
+        where: {userId : id},
+        attributes : ['id', 'message']
     })
 
     res.status(201).json({data : usermsg})
