@@ -16,10 +16,23 @@
             background-color: rgb(40, 2, 38);
         }
 
-        #mainDiv {
-            width: 60%;
+        #mainCon {
+            display: flex;
+        }
+
+        #createGroup {
+            width: 30%;
             height: 510px;
-            margin-left: 25%;
+            /* margin-left: 25%; */
+            margin-top: 2%;
+            border: 2px solid rgb(0, 255, 60);
+            background-color: antiquewhite;
+        }
+
+        #mainDiv {
+            width: 40%;
+            height: 510px;
+            /* margin-left: 25%; */
             margin-top: 2%;
             border: 2px solid rgb(140, 0, 255);
             justify-content: center;
@@ -31,7 +44,7 @@
             border: 2px solid red;
             width: 100%;
             font-size: 15px;
-           
+
         }
 
         #mesgArea {
@@ -51,7 +64,24 @@
         #head {
             margin-left: 45%;
         }
-
+        .groupNmae{
+            display: flex;
+            overflow-y: auto;
+        }
+        #groupsDetails{
+            height: 300px;
+            overflow-y: auto;
+        }
+        #notGroup{
+            /* height: 300px; */
+            overflow-y: auto;
+            width: 30%;
+            height: 510px;
+            /* margin-left: 25%; */
+            margin-top: 2%;
+            border: 2px solid rgb(0, 255, 60);
+            background-color: antiquewhite;
+        }
         /* .scroll-container {
             height: 200px;
             width: 300px;
@@ -61,17 +91,39 @@
 </head>
 
 <body>
-    <div id="mainDiv">
-        <h3 id="head">Chat</h3>
-        <div id="mesgArea">
+    <div id="mainCon">
 
-        </div>
-        <div id="box">
-
-            <div class="input-group">
-                <textarea id="textInput" class="form-control" aria-label="With textarea"></textarea>
-                <button type="button" class="btn btn-info" id="send">Send</button>
+        <div id="createGroup">
+            <form>
+                <div class="form-group">
+                    <label for="formGroupExampleInput">Group Name</label>
+                    <input type="text" class="form-control" id="groupname" placeholder="Enter Group Name">
+                </div>
+                <div id="buttons">
+                    <input id="submit" class="btn btn-primary" type="submit" value="submit">
+                </div>
+            </form>
+            <div>
+                <h4>Connected Groups</h4>
+                <div id="groupsDetails"></div>
+                
             </div>
+        </div>
+        <div id="mainDiv">
+            <h3 id="head">Chat</h3>
+            <div id="mesgArea">
+
+            </div>
+            <div id="box">
+                <div class="input-group">
+                    <textarea id="textInput" class="form-control" aria-label="With textarea"></textarea>
+                    <button type="button" class="btn btn-info" id="send">Send</button>
+                </div>
+            </div>
+        </div>
+        <div id="notGroup">
+            <h4>Not Connected Groups</h4>
+            <div id="groupsDetailsNot"></div>
         </div>
     </div>
 

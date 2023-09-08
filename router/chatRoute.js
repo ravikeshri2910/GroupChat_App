@@ -9,4 +9,8 @@ router.post('/send-data', authenticate.authenticateUser, chatControl.chatMsg)
 
 router.get('/get-data', authenticate.authenticateUser, chatControl.getMsg)
 
+router.post('/group-name', authenticate.authenticateUser, chatControl.creategroup)
+
+router.get('/join-group/:id', authenticate.authenticateUser, chatControl.joinGroup)
+
 module.exports = router;

@@ -5,7 +5,9 @@ const bodyParser = require('body-parser')
 
 const sequelize = require('./utill/database');
 const Users = require('./models/user')
+const Group = require('./models/group')
 const Message = require('./models/message')
+const Groupmembers = require('./models/groupmemeber')
 const userROute = require('./router/userRouter')
 const chatROute = require('./router/chatRoute')
 
@@ -15,6 +17,12 @@ app.use(bodyParser.json());
 
 Users.hasMany(Message);
 Message.belongsTo(Users)
+
+Group.hasMany(Message)
+Message.belongsTo(Group)
+
+Users.belongsToMany(Group, { through: Groupmembers });
+Group.belongsToMany(Users, { through: Groupmembers });
 
 
 app.use('/user', userROute)
