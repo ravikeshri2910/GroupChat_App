@@ -11,6 +11,7 @@ const Group = sequelize.define('groups',{
         primaryKey : true
     },
     group : Sequelize.STRING,
+    adminId : Sequelize.STRING
    
 });
 

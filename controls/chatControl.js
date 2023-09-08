@@ -23,6 +23,7 @@ exports.getMsg = async (req, res) => {
 
     console.log('getmsg')
     const userId = req.user.id
+
     const usermsg = await Message.findAll({
         where: { userId: userId },
         attributes: ['id', 'message']
@@ -55,7 +56,7 @@ exports.getMsg = async (req, res) => {
 
     // console.log(groupsUserIsNotAMemberOf)
 
-    res.status(201).json({ data: usermsg, groupData: groups, notMemeber: groupsUserIsNotAMemberOf })
+    res.status(201).json({username : req.user.email,userId:userId, data: usermsg, groupData: groups, notMemeber: groupsUserIsNotAMemberOf })
 
 
 }
@@ -67,7 +68,8 @@ exports.creategroup = async (req, res) => {
         // console.log(groupname)
 
         let newGroup = await Group.create({
-            group: groupname
+            group: groupname,
+            adminId : req.user.id
         })
 
         const grp = await Groupmembers.create({

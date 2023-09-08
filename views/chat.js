@@ -64,8 +64,15 @@ async function getmsg() {
     })
     localStorage.setItem('message', msgarr)
     localStorage.setItem('id', idarr)
+
+    let div = document.getElementById('name')
+    let p = document.createElement('p')
+    p.innerHTML = `<p>User :- ${res.data.username}</p>`
+    div.append(p)
+    
+
     allMsg(res.data.data)
-    groupDetails(res.data.groupData)
+    groupDetails(res.data.groupData , res.data.userId)
     allgroupDetails(res.data.notMemeber)
     console.log(res)
 }
@@ -75,9 +82,9 @@ function allgroupDetails(data) {
     let div = document.getElementById('groupsDetailsNot')
     div.innerHTML = ""
     data.forEach(element => {
-        let p = document.createElement('p')
+        let p = document.createElement('h5')
         p.className = "groupNmae"
-        p.innerHTML = `<h4>${element.group}</h4><button type="button" class="btn btn-warning"  onclick="joingroup(event ,${element.id})">Join</button>`
+        p.innerHTML = `${element.group}<button type="button" class="btn btn-warning"  onclick="joingroup(event ,${element.id})">Join</button>`
         div.append(p)
     });
 
@@ -96,13 +103,22 @@ async function joingroup(e,id){
 }
 
 
-function groupDetails(data) {
+function groupDetails(data, userId) {
     let div = document.getElementById('groupsDetails')
     div.innerHTML = ""
+    // console.log(userId)
     data.forEach(element => {
+        
+        // console.log(element.adminId)
+        let admin;
+        if(+element.adminId == userId){
+            admin = "admin"
+        }else{
+            admin = ""
+        }
         let p = document.createElement('p')
         p.className = "groupNmae"
-        p.innerHTML = `<h4>${element.group}</h4>`
+        p.innerHTML = `${element.group}  <span id="admin">${admin}</span>`
         div.append(p)
     });
 
