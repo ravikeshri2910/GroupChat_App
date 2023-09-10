@@ -2,9 +2,7 @@
 
 const socket = io('http://localhost:3000')
 
-socket.on('login',(data)=>{
-    console.log(data)
-})
+
 
 document.getElementById('submit').addEventListener('click', groupname)
 
@@ -55,6 +53,7 @@ getmsg(1)
 async function getmsg(id) {
 
     // io("http://localhost:5000")
+    
 
     const site = `http://localhost:3000/logIn/get-data/${id}`
     let token = localStorage.getItem('token')
@@ -82,6 +81,7 @@ async function getmsg(id) {
     allMsg(res.data.data, res.data.userId, res.data.username)
     groupDetails(res.data.groupData, res.data.userId)
     allgroupDetails(res.data.notMemeber)
+    // socket.emit('new-user', {res.data.username})
     console.log(res)
 }
 
@@ -140,6 +140,8 @@ let flag = false;
 async function opengroup(groupId, userId) {
 
     socket.emit('new-user', {groupId,userId})
+
+   
     
     localStorage.setItem("groupId", groupId)
     localStorage.setItem("userId", userId)
@@ -158,9 +160,29 @@ async function opengroup(groupId, userId) {
 
 socket.on('user joined',(data)=>{
 
-    console.log(data)
+    console.log(data.groupId)
+    userJoined(data.groupId)
+
 })
 
+socket.on('chat-message',(msg)=>{
+
+    console.log(msg)
+    // userJoined(data.groupId)
+    showmsgToOther(msg.message)
+
+})
+
+function userJoined(groupId) {
+    // e.preventDefault()
+
+    let div = document.getElementById('mesgArea')
+    let p = document.createElement('p')
+    p.innerHTML = `<h4>${groupId}-connected</h4>`
+    p.className = "msgmargin"
+    div.append(p)
+    div.scrollTop = div.scrollHeight;
+}
 
 // setInterval(function () {
 //     if (flag == true) {
@@ -222,6 +244,8 @@ async function sendMsg() {
 
         let groupId = localStorage.getItem("groupId")
         let msg = document.getElementById('textInput')
+        showmsg(msg.value)
+        socket.emit('send-chat-message', msg.value)
 
         let obj = {
             message: msg.value
@@ -248,7 +272,7 @@ async function sendMsg() {
 
 
         console.log(res)
-        showmsg(res.data.data.message, res.data.data.userId, res.data.data.groupId)
+        // showmsg(res.data.data.message, res.data.data.userId, res.data.data.groupId)
 
     } catch (err) { console.log(err) }
 
@@ -262,6 +286,14 @@ function showmsg(msg, userId, groupId) {
     let p = document.createElement('p')
     p.innerHTML = `<h4>${msg}</h4>`
     p.className = "msgmargin"
+    div.append(p)
+    div.scrollTop = div.scrollHeight;
+}
+function showmsgToOther(msg) {
+    let div = document.getElementById('mesgArea')
+    let p = document.createElement('p')
+    p.innerHTML = `<h4>${msg}</h4>`
+    p.className = "notyourmsgmargin"
     div.append(p)
     div.scrollTop = div.scrollHeight;
 }
