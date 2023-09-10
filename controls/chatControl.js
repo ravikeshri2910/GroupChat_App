@@ -9,24 +9,28 @@ const Groupmembers = require('../models/groupmemeber')
 exports.chatMsg = async (req, res) => {
     // console.log(req.user)
     const message = req.body.message
+    const groupid = req.params.groupid
+    // const userId = req.params.userId
     // console.log(message)
 
     let usermsg = await Message.create({
         message: message,
-        userId: req.user.id
+        userId: req.user.id,
+        groupId : groupid
     })
 
-    res.status(201).json({ data: usermsg })
+    res.status(201).json({ data: usermsg , useremail : req.user.email })
 }
 
 exports.getMsg = async (req, res) => {
 
     console.log('getmsg')
     const userId = req.user.id
+    const groupid = req.params.groupId
 
     const usermsg = await Message.findAll({
-        where: { userId: userId },
-        attributes: ['id', 'message']
+        where: { groupId: groupid },
+        attributes: ['id', 'message','userId','groupId']
     })
 
     const allGroups = await Group.findAll();
@@ -56,7 +60,7 @@ exports.getMsg = async (req, res) => {
 
     // console.log(groupsUserIsNotAMemberOf)
 
-    res.status(201).json({username : req.user.email,userId:userId, data: usermsg, groupData: groups, notMemeber: groupsUserIsNotAMemberOf })
+    res.status(201).json({username : req.user.email ,userId:userId, data: usermsg, groupData: groups, notMemeber: groupsUserIsNotAMemberOf })
 
 
 }
@@ -98,4 +102,20 @@ exports.joinGroup = async (req, res) => {
 
         res.status(200).json({ grpJoined: grpJoined, groupName: groupName })
     } catch (err) { console.log(err) }
+}
+
+exports.groupData=async (req,res)=>{
+
+    const {groupId,userId} = req.params
+    console.log(groupId)
+
+    const message  = await Message.findAll({
+        where : {groupId: +groupId}
+    })
+
+    const groupName = await Group.findOne({
+        where : {id: +groupId}
+    })
+
+    res.status(200).json({message:message , groupName : groupName})
 }
