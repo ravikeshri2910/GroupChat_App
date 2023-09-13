@@ -19,23 +19,68 @@ async function groupname(event) {
     let token = localStorage.getItem('token')
     const site = `http://localhost:3000/logIn/group-name`
     let res = await axios.post(site, obj, { headers: { "Authorization": token } })
+    groupname.value = ""
+    console.log(res.data)
 
-    console.log(res.data.groupD.group)
-    groupDetail(res.data.groupD.group)
+
+    localStorage.setItem("newGroupName", res.data.groupD.group)
+    localStorage.setItem("newGroupId", res.data.groupD.id)
+
+    window.location.href = "addGroupMem.html"
+    // groupDetail(res.data.groupD.group)
 
 }
 
 function groupDetail(data) {
     let div = document.getElementById('groupsDetails')
 
+    getmsg(1)
+
     console.log(div)
     let p = document.createElement('p')
-    p.innerHTML = `<h4>${data}</h4><button type="button" class="btn btn-warning" >Chat</button>`
+    p.className = "groupNmae"
+    p.innerHTML = `<h4  id="admin">${data}--</h4><button type="button" class="btn btn-warning" >Chat</button>`
     div.append(p)
 
 }
 
 
+function groupDetails(data, userId) {
+    let div = document.getElementById('groupsDetails')
+    div.innerHTML = ""
+    // console.log(userId)
+    data.forEach(element => {
+
+        // const chatTitle = element.group
+
+        let admin;
+        if (+element.adminId == userId) {
+            admin = "admin"
+        } else {
+            admin = ""
+        }
+        let p = document.createElement('p')
+        p.className = "groupNmae"
+        const chatTitle = element.group
+
+        if (admin == "admin") {
+            p.innerHTML = `<h4 id="admin"> ${element.group}--${admin}</h4><button type="button" class="btn btn-warning"  onclick="opengroup(${element.id},${userId})">Chat</button>--<button type="button" class="btn btn-danger"  onclick="openAddmember(${element.id},${userId})">Add member</button>`
+
+        } else {
+            p.innerHTML = `<h4 id="admin"> ${element.group}</h4><button type="button" class="btn btn-warning"  onclick="opengroup(${element.id},${userId})">Chat</button>`
+        }
+        console.log(chatTitle)
+        div.append(p)
+    });
+}
+
+function openAddmember(groupId, userId ) {
+    console.log(groupId, userId )
+    localStorage.setItem("groupId", groupId)
+    // localStorage.setItem("newGroupName", res.data.groupD.group)
+    // localStorage.setItem("newGroupId", res.data.groupD.id)
+    window.location.href = "./addGroupMem.html"
+}
 
 
 
@@ -48,28 +93,28 @@ window.onload = function () {
 // get data
 
 
-getmsg(1)
+getmsg()
 
 async function getmsg(id) {
 
     // io("http://localhost:5000")
-    
+
 
     const site = `http://localhost:3000/logIn/get-data/${id}`
     let token = localStorage.getItem('token')
     let res = await axios.get(site, { headers: { "Authorization": token } })
 
-    console.log(res)
-    let idarr = []
-    let msgarr = []
 
-    let msg = res.data.data
-    msg.forEach((e) => {
-        idarr.push(e.id)
-        msgarr.push(e.message)
-    })
-    localStorage.setItem('message', msgarr)
-    localStorage.setItem('id', idarr)
+
+    // let msg = res.data.data
+    // msg.forEach((e) => {
+    //     idarr.push(e.id)
+    //     msgarr.push(e.message)
+    // })
+    // localStorage.setItem('message', msgarr)
+    console.log('res.data.username', res.data.username)
+    localStorage.setItem('sender', res.data.username)
+    localStorage.setItem("userId", res.data.userId)
 
     let div = document.getElementById('name')
     div.innerHTML = ""
@@ -77,12 +122,15 @@ async function getmsg(id) {
     p.innerHTML = `<p>User :- ${res.data.username}</p>`
     div.append(p)
 
+    const name = res.data.username.split(" ")
+    console.log('name', name[0])
+
     // opengroup(id,res.data.userId)
     allMsg(res.data.data, res.data.userId, res.data.username)
     groupDetails(res.data.groupData, res.data.userId)
     allgroupDetails(res.data.notMemeber)
     // socket.emit('new-user', {res.data.username})
-    console.log(res)
+    console.log('whole res', res)
 }
 
 
@@ -111,65 +159,47 @@ async function joingroup(e, id) {
 }
 
 
-function groupDetails(data, userId) {
-    let div = document.getElementById('groupsDetails')
-    div.innerHTML = ""
-    // console.log(userId)
-    data.forEach(element => {
-
-        // const chatTitle = element.group
-
-        let admin;
-        if (+element.adminId == userId) {
-            admin = "admin"
-        } else {
-            admin = ""
-        }
-        let p = document.createElement('p')
-        p.className = "groupNmae"
-        const chatTitle = element.group
-        p.innerHTML = `<h4 id="admin"> ${element.group}--${admin}</h4><button type="button" class="btn btn-warning"  onclick="opengroup(${element.id},${userId})">Chat</button>`
-        console.log(chatTitle)
-        div.append(p)
-    });
-}
 
 let flag = false;
 
 
 async function opengroup(groupId, userId) {
 
-    socket.emit('new-user', {groupId,userId})
+    socket.emit('new-user', { groupId, userId })
 
-   
-    
     localStorage.setItem("groupId", groupId)
     localStorage.setItem("userId", userId)
+
     flag = true
-    
+
     let token = localStorage.getItem('token')
     const site = `http://localhost:3000/logIn/group-data/${groupId}/${userId}`
     let res = await axios.get(site, { headers: { "Authorization": token } })
     console.log(res)
 
     //socket.emit('new-user', name)
-    
+
     allMsg(res.data.message, res.data.groupName.group, userId)
     // div.scrollTop = div.scrollHeight;
 }
 
-socket.on('user joined',(data)=>{
+socket.on('user joined', (data) => {
 
     console.log(data.groupId)
-    userJoined(data.groupId)
+    // userJoined(data.groupId)
 
 })
 
-socket.on('chat-message',(msg)=>{
+socket.on('chat-message', (msg) => {
 
-    console.log(msg)
+    console.log(msg.groupId)
+
+    let groupId = localStorage.getItem('groupId')
     // userJoined(data.groupId)
-    showmsgToOther(msg.message)
+    if (msg.groupId == groupId) {
+        console.log('same')
+        showmsgToOther(msg.message, msg.name)
+    }
 
 })
 
@@ -184,24 +214,13 @@ function userJoined(groupId) {
     div.scrollTop = div.scrollHeight;
 }
 
-// setInterval(function () {
-//     if (flag == true) {
-//         let groupid = localStorage.getItem('groupId') || 1
-//         // console.log("groupid" + groupid)
-//         let userId = localStorage.getItem('userId')
-//         // console.log("userId" + +userId)
-//         opengroup(groupid, userId)
-        
-//     }
-//     else{
-//         return
-//     }
-// }, 1000);
 
 
 function allMsg(data, groupName, userid) {
     // console.log(userid)
 
+    const front = localStorage.getItem('sender')
+    console.log('front' + front)
 
     let head = document.getElementById('head')
     head.innerText = groupName
@@ -209,13 +228,14 @@ function allMsg(data, groupName, userid) {
     let div = document.getElementById('mesgArea')
     div.innerHTML = ""
     data.forEach(element => {
+        console.log(element.sender) //t
         let p = document.createElement('p')
         if (element.userId == +userid) {
 
             p.innerHTML = `<h4>${element.message}</h4>`
             p.className = "msgmargin"
         } else {
-            p.innerHTML = `<h4> ${element.message}</h4>`
+            p.innerHTML = `<h4>${element.sender}-${element.message}</h4>`
             p.className = "notyourmsgmargin"
 
         }
@@ -244,28 +264,25 @@ async function sendMsg() {
 
         let groupId = localStorage.getItem("groupId")
         let msg = document.getElementById('textInput')
-        showmsg(msg.value)
-        socket.emit('send-chat-message', msg.value)
+        let username = localStorage.getItem("sender")
+        let msgValue = msg.value
+
+        if (!msgValue) {
+            return
+        }
+
+        showmsg(msgValue)
+
+        socket.emit('send-chat-message', { msgValue, username, groupId })
 
         let obj = {
-            message: msg.value
+            message: msgValue,
+            sender: username
         }
-        console.log(groupId)
+        // console.log(groupId)
         let token = localStorage.getItem('token')
         const site = `http://localhost:3000/logIn/send-data/${groupId}`
         let res = await axios.post(site, obj, { headers: { "Authorization": token } })
-
-        // let oldMsg = localStorage.getItem('message')
-        // let idMsg = localStorage.getItem('id')
-
-        // let localmsg = oldMsg.split(',')
-        // let localid = idMsg.split(',')
-
-        // localmsg.push(res.data.data.message)
-        // localid.push(res.data.data.id)
-
-        // localStorage.setItem('message', localmsg)
-        // localStorage.setItem('id', localid)
 
 
         msg.value = ''
@@ -289,11 +306,51 @@ function showmsg(msg, userId, groupId) {
     div.append(p)
     div.scrollTop = div.scrollHeight;
 }
-function showmsgToOther(msg) {
+
+function showmsgToOther(msg, name) {
     let div = document.getElementById('mesgArea')
     let p = document.createElement('p')
-    p.innerHTML = `<h4>${msg}</h4>`
+    p.innerHTML = `<h4>${name}-${msg}</h4>`
     p.className = "notyourmsgmargin"
     div.append(p)
     div.scrollTop = div.scrollHeight;
+}
+
+document.getElementById('search').addEventListener('click', search)
+
+async function search(event){
+     event.preventDefault()
+
+    const searchInput =  document.getElementById('searchInput').value
+    console.log(searchInput)
+    
+    const obj = {
+        searchInput:searchInput
+    }
+
+    let token = localStorage.getItem('token')
+    const site = `http://localhost:3000/logIn/search`
+    let res = await axios.post(site, obj, { headers: { "Authorization": token } })
+
+    console.log(res.data.searchDetails)
+
+    const result= res.data.searchDetails
+
+    let div = document.getElementById('searchMember')
+    div.innerHTML = ""
+
+    result.forEach((member)=>{
+
+        let p = document.createElement('p')
+        p.innerHTML = `<h4>${member.name}-<button type="button" class="btn btn-warning"  onclick="addInGroupSearch(event,${member.id})">Add</button></h4>`
+        div.append(p)
+    })
+
+}
+
+document.getElementById('logout').addEventListener('click', logOut)
+
+function logOut(){
+    localStorage.clear()
+    window.location.href = './login.html'
 }

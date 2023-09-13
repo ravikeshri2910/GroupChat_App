@@ -50,10 +50,10 @@ sequelize
     .catch(err => console.log(err))
 
 const io = require("socket.io")(server, {
-        // cors: {
-        //   origin: ["http://127.0.0.1:5500"],
-        // },
-      });
+    cors: {
+      origin: ["http://127.0.0.1:5500"],
+    },
+});
 
 
 
@@ -76,7 +76,7 @@ let numUsers = 0;
 //   // when the client emits 'add user', this listens and executes
 //   socket.on('new-user', (username) => {
 //     if (addedUser) return;
-    
+
 //     // we store the username in the socket session for this client
 //     socket.username = username;
 //     console.log(socket.username)
@@ -124,28 +124,30 @@ const users = {}
 
 io.on('connection', socket => {
 
-    console.log('socket'+ (socket))
+    // console.log('socket' + (socket))
 
-    socket.on('new-user', name => {
+    socket.on('new-user', (name) => {
         socket.name = name;
-    //   users[socket.id] = name
-    console.log('name', name)
-    socket.emit('user joined', {
-              groupId: name.groupId,
-              numUsers: numUsers
-            });
-    //   socket.broadcast.emit('user-connected', name)
+        //   users[socket.id] = name
+        console.log('name', name)
+        socket.emit('user joined', {
+            groupId: name.groupId,
+            numUsers: numUsers
+        });
+        //   socket.broadcast.emit('user-connected', name)
     })
 
 
     socket.on('send-chat-message', message => {
+        socket.message = message
+        console.log('message' + message.groupId)
 
-        console.log('message'+ message)
-      socket.broadcast.emit('chat-message', { message: message })
-    //   socket.broadcast.emit('chat-message', { message: message, name: users[socket.id] })
+
+        socket.broadcast.emit('chat-message', { message: message.msgValue, name : message.username , groupId : message.groupId})
+        //   socket.broadcast.emit('chat-message', { message: message, name: users[socket.id] })
     })
     // socket.on('disconnect', () => {
     //   socket.broadcast.emit('user-disconnected', users[socket.id])
     //   delete users[socket.id]
     // })
-  })
+})

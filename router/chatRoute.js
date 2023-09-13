@@ -15,4 +15,10 @@ router.get('/join-group/:id', authenticate.authenticateUser, chatControl.joinGro
 
 router.get('/group-data/:groupId/:userId', authenticate.authenticateUser, chatControl.groupData)
 
+router.get('/all-users/:userId', authenticate.authenticateUser, chatControl.allUsers)
+
+
+router.post('/add-member', authenticate.authenticateUser, chatControl.addMember)
+
+router.post('/search', authenticate.authenticateUser, chatControl.search)
 module.exports = router;

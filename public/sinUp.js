@@ -5,10 +5,36 @@ document.getElementById('submit').addEventListener("click", sinUpData)
 async function sinUpData(event) {
     try {
         event.preventDefault()
-        console.log("here")
-
+        
         let name = document.getElementById('name')
         let email = document.getElementById('email')
+        console.log(email)
+
+        // const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+
+        const emailCheck = /^[a-zA-Z0-9_\-\.]+[@][a-z]+[\.][a-z]{2,4}$/
+
+
+        
+
+
+        function validateEmail(email) {
+          return emailCheck.test(email);
+        }
+        
+        // Example usage:
+        // const email = 'example@email.com';
+        if (validateEmail(email.value)) {
+          console.log('Email is valid');
+        } else {
+            alert("Enter a valid email")
+            return
+        }
+        
+
+
+
+
         let password = document.getElementById('password')
         let phone  = document.getElementById('pnone')
 

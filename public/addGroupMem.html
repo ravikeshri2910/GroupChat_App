@@ -103,18 +103,17 @@
             background-color: rgb(33, 157, 95);
             margin-top: 1%;
         }
-        .msgmargin{
+
+        .msgmargin {
             margin-left: 50%;
             border: 2px solid green;
             border-radius: 10px;
         }
-        .notyourmsgmargin{
+
+        .notyourmsgmargin {
             width: 50%;
             border: 2px solid green;
             border-radius: 10px;
-        }
-        #searchMember{
-            height: 100px;
         }
 
         /* .scroll-container {
@@ -129,48 +128,25 @@
 
     <div id="mainCon">
         <div id="createGroup">
-            <p id="name"></p>
-            <form>
-                <div class="form-group">
-                    <label for="formGroupExampleInput">Group Name</label>
-                    <input type="text" class="form-control" id="groupname" placeholder="Enter Group Name">
-                </div>
-                <div id="buttons">
-                    <input id="submit" class="btn btn-primary" type="submit" value="submit">
-                </div>
-            </form>
             <div>
-                
-                <h3>Connected Groups</h3>
-                <div id="groupsDetails"></div>
-
-            </div>
-        </div>
-        <div id="mainDiv">
-            <h4 id="head">Chat</h4>
-            <div id="mesgArea">
-
-            </div>
-            <div id="box">
-                <div class="input-group">
-                    <textarea id="textInput" class="form-control" aria-label="With textarea"></textarea>
-                    <button type="button" class="btn btn-info" id="send">Send</button>
-                </div>
-            </div>
-        </div>
-        <div id="notGroup">
-             <div>
                 <div class="form-inline my-2 my-lg-0">
                     <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" id="searchInput">
-                    <button class="btn btn-info my-2 my-sm-0" type="submit" id="search">Search</button>
-                    <button type="button" class="btn btn-danger" id="logout">log Out</button>
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit" id="search">Search</button>
                 </div>
                 <h3>Search Details</h3>
                 <div id="searchMember"></div>
             </div>
-            <h3>Not Connected Groups</h3>
-            <div id="groupsDetailsNot"></div>
+            <div>
+                <h3>Add member</h3>
+                <div id="addMember"></div>
+                <div id="users"></div>
+
+            </div>
+            <div id="buttons">
+                <input id="submit" class="btn btn-primary" type="submit" value="submit">
+            </div>
         </div>
+
     </div>
 
 
@@ -187,11 +163,13 @@
         crossorigin="anonymous"></script>
 </body>
 
-<script src="https://cdn.socket.io/4.6.0/socket.io.min.js" integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+" crossorigin="anonymous"></script>
+<script src="https://cdn.socket.io/4.6.0/socket.io.min.js"
+    integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+"
+    crossorigin="anonymous"></script>
 
 <!-- <script src="/socket.io/socket.io.js"></script> -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
 
-<script src="./chat.js"></script>
+<script src="./addGroupMem.js"></script>
 
 </html>
